@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11 6" width="484" height="264" shape-rendering="crispEdges">
+  <title>Claude Code mascot (pixel art)</title>
+  <g fill="#D97757">
+    <rect x="1" y="0" width="9" height="5"/>
+    <rect x="0" y="2" width="1" height="2"/>
+    <rect x="10" y="2" width="1" height="2"/>
+    <rect x="2" y="5" width="1" height="1"/>
+    <rect x="4" y="5" width="1" height="1"/>
+    <rect x="6" y="5" width="1" height="1"/>
+    <rect x="8" y="5" width="1" height="1"/>
+  </g>
+  <g fill="#141414">
+    <rect x="3" y="1" width="1" height="1"/>
+    <rect x="7" y="1" width="1" height="1"/>
+  </g>
+</svg>

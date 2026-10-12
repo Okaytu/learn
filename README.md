@@ -1,6 +1,6 @@
 # learn
 
-[![video](assets/thumbnail.png)](https://www.youtube.com/watch?v=kzcI5F4tGiU)
+[![video](assets/thumbnail-claude-code.png)](https://www.youtube.com/watch?v=kzcI5F4tGiU)
 
 An AI learning system for **Claude Code** and **OpenCode** that writes its lessons into **Obsidian**. It's a port of the pi setup from [How I Use AI to Learn Things](https://www.youtube.com/watch?v=kzcI5F4tGiU) ([amosblomqvist/learn](https://github.com/amosblomqvist/learn)). The teaching philosophy is unchanged. The pi extensions are replaced by each harness's own tools, plus a few small scripts both harnesses share.
 
