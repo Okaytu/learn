@@ -2,38 +2,63 @@
 
 [![video](assets/thumbnail.png)](https://www.youtube.com/watch?v=kzcI5F4tGiU)
 
-My AI learning system from this video: [How I Use AI to Learn Things](https://www.youtube.com/watch?v=kzcI5F4tGiU).
+An AI learning system for **Claude Code** and **OpenCode** that writes its lessons into **Obsidian**. It's a port of the pi setup from [How I Use AI to Learn Things](https://www.youtube.com/watch?v=kzcI5F4tGiU) ([amosblomqvist/learn](https://github.com/amosblomqvist/learn)). The teaching philosophy is unchanged. The pi extensions are replaced by each harness's own tools, plus a few small scripts both harnesses share.
 
-This is a personal system I built for myself, shared as-is. Built as a pi configuration: the teaching philosophy encoded in a skill, a few small extensions, and agent definitions.
+## Two ways to learn
+
+| Mode | Use it when | How |
+|---|---|---|
+| **Teach** | You want to properly learn a topic | `/teach <topic>`, or just ask to learn something. It probes your level with quizzes, plans a dependency map, then teaches node by node, checking each one |
+| **Mentor** | You're building something and want to learn as you go | Claude Code: `/config` → Output style → **Mentor**. OpenCode: press Tab to switch to the **mentor** agent. It does the work, explains the *why*, leaves you one small piece to write, and recaps what just happened |
+
+Both modes write the session into an Obsidian note if you link one (`/md-log`; `/teach` does it for you).
 
 ## What's in it
 
-- `skills/teach/` — the philosophy and the process
-- `skills/visualize/` — adds a correct, minimal diagram to a lesson when an idea is clearer as a picture
-- `extensions/ask-user-question/` — the agent asks you questions through a UI popup
-- `extensions/quiz/` — graded questions with instant feedback (✓/✗, correct answer, explanation)
-- `extensions/md-log/` — link a markdown file to the session
-- `extensions/visual-tools/` — tools for visualization subagents
-- `agents/` — `researcher`, `svg-maker`, `mermaid-maker`: the subagents the system delegates to
+| Piece | What it does | Claude Code | OpenCode |
+|---|---|---|---|
+| `teach` skill | The philosophy and the probe → plan → teach process | `.claude/skills/teach/` | Same files (OpenCode reads `.claude/skills/`) |
+| `visualize` skill | Adds one correct, minimal diagram to a lesson | `.claude/skills/visualize/` | Same files |
+| `researcher` | Fact-checks with the web before anything is taught | `.claude/agents/` | `.opencode/agents/` |
+| `mermaid-maker`, `svg-maker` | Draw a diagram, render it, *look at it*, fix it, publish it to `viz/` | `.claude/agents/` | `.opencode/agents/` |
+| Mentor mode | Learn-while-coding behaviour | `.claude/output-styles/mentor.md` | `.opencode/agents/mentor.md` |
+| Quizzes and questions | Popups with options | Built-in `AskUserQuestion` | Built-in `question` tool |
+| Lesson log | Mirrors prompts, prose, questions and answers into a note | Hooks in `.claude/settings.json` | Plugin in `.opencode/plugins/md-log.ts` |
+| Shared scripts | Rendering and logging used by both | `scripts/render.mjs`, `scripts/md-log.mjs` | Same |
 
-## Install
+Agent prompts have one source in `src/`. `npm run build` generates the Claude Code and OpenCode versions, so the two never drift apart.
 
-This repo **is** a `.pi` directory. From your learning project's root:
+## Setup
+
+Requirements: Node 18+, plus Claude Code and/or OpenCode.
 
 ```bash
-git clone https://github.com/amosblomqvist/learn .pi
+git clone https://github.com/okaytu/learn my-learning
+cd my-learning
+npm install          # mermaid-cli, for diagrams
 ```
 
-Then open pi in that directory. (Or copy the pieces you want into your existing project config.)
+1. **Open the folder as an Obsidian vault** (or put it inside your existing vault). Lessons land in `lessons/` and diagrams in `viz/`. Obsidian hides the dot-folders.
+2. **Diagrams** need a Chrome or Chromium install (found automatically, or set `PUPPETEER_EXECUTABLE_PATH`). For SVG, also install `librsvg` (`brew install librsvg`, `apt install librsvg2-bin`). Without it, rendering falls back to ImageMagick, then headless Chrome.
+3. **Start the agent** in this folder: `claude` or `opencode`.
 
-## Requirements
+### OpenCode and Muse Spark
 
-- [pi](https://github.com/earendil-works/pi)
-- A subagent implementation, so the system can spawn the researcher and the visual makers. Recommended: [pi-interactive-subagents](https://github.com/amosblomqvist/pi-interactive-subagents) (tmux only). With it, everything works out of the box. Any other implementation works too, but expect to adapt the agent definitions, e.g. `agents/researcher.md` lists `safe_bash` in its tools, which is specific to that extension.
-- `ask-user-question` — use the copy bundled here. If your setup already has an `ask-user-question` extension, use **this** one in its place. Popups from different extensions serialize through a shared UI lock, which only works when it's the same implementation.
+Pick your model with `/models` in OpenCode; it's remembered for next time. The OpenCode agents here don't pin a model, so the researcher and the diagram makers run on whatever model your session uses (Muse Spark included). To pin a model for one agent, set `model` for it under `opencode` in `scripts/build.mjs` and run `npm run build`.
 
-## Notes
+Two things to check:
+- **The diagram makers must see images.** They open the rendered PNG to check it. Use a model with image input; Muse Spark lists image input.
+- **Free tiers may train on your data.** Third-party reports say the free "Contributor" access to Muse Spark on OpenCode may use your prompts for training ([report](https://select.keenable.ai/r/opencode-go-25-model-price-throughput-capability-guide/JCZU0lc6y3CWlMKZRnGI0Q), [deal post](https://www.mydealz.de/deals/muse-spark-13-kostenlos-nutzbar-uber-opencode-vgb-mit-opus-5-gpt-56-sol-2834571)). That's fine for learning, but don't paste private code into it. Check the current terms on the model's OpenCode page.
+- **Web search in OpenCode** works out of the box on the OpenCode/OpenCode Go providers. On other providers, start with `OPENCODE_ENABLE_EXA=1 opencode` so the researcher can search.
 
-You can run the system without subagents. The main session does the teaching. You just lose the researcher (truth verification) and the generated visuals.
+## The lesson log
 
-The teaching skill is written for one learner (me). Edit the skill to fit how you learn best.
+- `/md-log lessons/2026-10-12-tcp.md` links a note (created if missing) and backfills the session into it.
+- `/md-unlog` stops logging.
+- `/teach` links a note on its own once it knows the topic.
+
+You see each question in the note before you answer it, and your answer right after. Quizzes are marked as quizzes, and the answer is never written into the question. Only the session that was active when you linked writes to the note, and the log only ever appends to it.
+
+## Make it yours
+
+The `teach` skill was written for one learner. Edit `.claude/skills/teach/SKILL.md` to fit how you learn. For the agents and mentor mode, edit `src/`, then run `npm run build` (`npm run check` tells you if the generated files are stale).
