@@ -1,0 +1,13 @@
+{
+  "name": "learn",
+  "private": true,
+  "description": "A teaching system for Claude Code and OpenCode that writes its lessons into Obsidian.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check"
+  },
+  "dependencies": {
+    "@mermaid-js/mermaid-cli": "^11.12.0"
+  }
+}

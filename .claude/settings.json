@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/md-log.mjs:*)",
+      "Bash(node scripts/render.mjs:*)",
+      "WebSearch",
+      "WebFetch"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/md-log.mjs\" hook" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "AskUserQuestion",
+        "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/md-log.mjs\" hook" }]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/md-log.mjs\" hook" }]
+      }
+    ]
+  }
+}
