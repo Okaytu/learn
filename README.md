@@ -168,6 +168,14 @@ This installs the tool that draws diagrams (and a small browser it uses to draw 
 
 You'll see folders like `lessons` and `viz`. That's where your notes and diagrams will appear. Hidden folders (starting with a dot) hold the system itself; you don't need to touch them.
 
+**Hide the helper folders from Obsidian** (recommended). `npm install` added a big `node_modules` folder full of technical files you'll never read. To keep them out of your search and graph:
+
+1. In Obsidian, open **Settings** (the gear icon, bottom left).
+2. Go to **Files and links** → **Excluded files** → **Manage**.
+3. Add these three, one at a time: `node_modules/`, `src/`, `scripts/`.
+
+> **Already have an Obsidian vault you want to use?** Put the project folder *inside* your vault instead (e.g. `My Vault/learn/`) and skip "Open folder as vault". Everything works the same, with two differences: in Excluded files, add `learn/node_modules/`, `learn/src/` and `learn/scripts/` (use your folder's name), and always start the tutor from inside that `learn` folder, not from the vault's top folder. Your lessons appear in `learn/lessons/`, and you can link to them from any of your other notes.
+
 ### Step 8: Start the tutor for the first time
 
 In the terminal (still inside your project folder), type:
