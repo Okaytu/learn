@@ -264,6 +264,9 @@ You can also just talk normally: *"Quiz me on what we covered"*, *"Explain that 
 **"command not found: node", "npm", "claude" or "opencode"**
 Close the terminal and open a new one; a fresh window picks up new installs. If it still fails, reinstall the missing piece (Step 2 for node/npm, Step 4 for claude/opencode).
 
+**"Unknown command: /teach"**
+The tutor was started from the wrong folder, so it can't find its setup. Type `/exit`, then go into the project folder (Step 6) and start `claude` or `opencode` again. To check you're in the right place before starting, type `ls -a` (Mac) or `ls -Force` (Windows): you should see `.claude` and `.opencode` in the list. If they're missing, you're in the wrong folder, or the download is incomplete, so download the ZIP again.
+
 **Mac: "permission denied" (EACCES) during Step 4**
 Run this once, then repeat Step 4:
 ```bash
